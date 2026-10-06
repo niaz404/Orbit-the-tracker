@@ -222,37 +222,42 @@ export function Sidebar({ isMobileOpen, onMobileClose }) {
         </div>
       </div>
 
-      {/* Sidebar Bottom: Sleek User Profile Widget with Custom Avatar Border Glow */}
-      <div className="p-3.5 border-t border-[var(--border-subtle)] bg-white/[0.02]">
+      {/* Sidebar Bottom: Sleek User Profile Widget */}
+      <div className="p-3 border-t border-[var(--border-subtle)] bg-black/20">
         <Link
           href="/settings"
           onClick={onMobileClose}
           className={cn(
-            "flex items-center gap-3 p-2.5 rounded-2xl transition-all group cursor-pointer border",
+            "flex items-center gap-3 p-2 rounded-2xl transition-all duration-200 group cursor-pointer border",
             isSettingsActive
-              ? "bg-indigo-500/15 border-indigo-500/30 text-[var(--text-primary)] shadow-md shadow-indigo-500/10"
-              : "border-white/[0.04] bg-white/[0.02] hover:bg-white/[0.07] hover:border-white/[0.1]"
+              ? "bg-indigo-500/15 border-indigo-500/40 text-white shadow-lg shadow-indigo-500/10"
+              : "border-white/[0.06] bg-[#0a0c16]/80 hover:bg-[#101426] hover:border-white/[0.15] shadow-md"
           )}
         >
-          <Avatar
-            src={account.avatarUrl}
-            fallback={account.displayName}
-            size="md"
-            status="online"
-            borderColor={account.avatarBorderColor}
-            className="shrink-0 shadow-md"
-          />
+          <div className="relative shrink-0">
+            <Avatar
+              src={account.avatarUrl}
+              fallback={account.displayName}
+              size="md"
+              status="online"
+              borderColor={account.avatarBorderColor}
+              className="shrink-0 shadow-md ring-2 ring-[#0a0c16]"
+            />
+          </div>
+
           {!collapsed && (
-            <div className="flex flex-col min-w-0 flex-1">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-[var(--text-primary)] truncate">
-                  {account.displayName}
+            <div className="flex items-center justify-between min-w-0 flex-1">
+              <div className="flex flex-col min-w-0 pr-1">
+                <span className="text-xs font-bold text-white group-hover:text-indigo-200 transition-colors truncate">
+                  {account.displayName || "Explorer"}
                 </span>
-                <Settings className="w-3.5 h-3.5 text-[var(--text-muted)] group-hover:text-indigo-300 transition-colors" />
+                <span className="text-[11px] text-slate-400 truncate font-mono">
+                  @{account.username || "orbit_user"}
+                </span>
               </div>
-              <span className="text-[10px] text-[var(--text-muted)] truncate font-mono">
-                @{account.username}
-              </span>
+              <div className="p-1.5 rounded-xl bg-white/[0.04] text-slate-400 group-hover:text-indigo-300 group-hover:bg-indigo-500/20 transition-all shrink-0">
+                <Settings className="w-3.5 h-3.5" />
+              </div>
             </div>
           )}
         </Link>

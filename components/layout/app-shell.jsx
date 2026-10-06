@@ -8,7 +8,7 @@ export function AppShell({ children, pageTitle = "Workspace" }) {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
-    <div className="relative min-h-screen bg-[var(--bg-app)] text-[var(--text-primary)] flex overflow-x-hidden selection:bg-indigo-500/30 selection:text-indigo-200">
+    <div className="relative h-screen w-screen overflow-hidden bg-[var(--bg-app)] text-[var(--text-primary)] flex selection:bg-indigo-500/30 selection:text-indigo-200">
       {/* Ambient Aurora Glow Lights in Backdrop */}
       <div className="pointer-events-none fixed inset-0 overflow-hidden z-0">
         <div className="absolute -top-40 left-1/4 w-[600px] h-[600px] bg-indigo-600/10 rounded-full blur-[140px]" />
@@ -16,14 +16,14 @@ export function AppShell({ children, pageTitle = "Workspace" }) {
         <div className="absolute -bottom-20 left-1/3 w-[600px] h-[600px] bg-cyan-600/6 rounded-full blur-[180px]" />
       </div>
 
-      {/* Persistent Glass Sidebar */}
+      {/* Persistent Stationary Glass Sidebar */}
       <Sidebar
         isMobileOpen={mobileOpen}
         onMobileClose={() => setMobileOpen(false)}
       />
 
-      {/* Main Content Area */}
-      <div className="flex-1 flex flex-col min-w-0 relative z-10">
+      {/* Main Content Area — Dedicated smooth scroll container */}
+      <div className="flex-1 flex flex-col h-full min-w-0 overflow-y-auto overflow-x-hidden relative z-10">
         <Header
           title={pageTitle}
           onMobileMenuToggle={() => setMobileOpen(!mobileOpen)}
@@ -35,3 +35,4 @@ export function AppShell({ children, pageTitle = "Workspace" }) {
     </div>
   );
 }
+
