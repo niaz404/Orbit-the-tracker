@@ -51,26 +51,26 @@ export function Sidebar({
 
   const sidebarContent = (
     <div className="flex flex-col h-full bg-[var(--bg-sidebar)] backdrop-blur-2xl border-r border-[var(--border-subtle)] select-none">
-      {/* 1. BRAND LOGO (STYLISH AGU DISPLAY FONT, NO COLLAPSE BUTTON BESIDE LOGO) */}
+      {/* 1. BRAND LOGO (AGU DISPLAY FONT, BOLD & CLEAN, NO COLLAPSED BOX) */}
       <div className="h-[60px] px-5 flex items-center justify-between border-b border-[var(--border-subtle)]">
         <Link
           href="/workspace"
           onClick={onMobileClose}
-          className="flex items-center gap-2 group cursor-pointer"
+          className="flex items-center gap-2.5 group cursor-pointer"
         >
           {!collapsed ? (
             <div className="flex items-baseline gap-2">
-              <span className="font-logo font-bold text-2xl tracking-wide bg-gradient-to-r from-white via-indigo-100 to-indigo-300 bg-clip-text text-transparent group-hover:from-indigo-300 group-hover:to-cyan-300 transition-all duration-300">
+              <span className="font-logo font-black text-3xl tracking-wide bg-gradient-to-r from-white via-indigo-100 to-indigo-300 bg-clip-text text-transparent group-hover:from-indigo-300 group-hover:to-cyan-300 transition-all duration-300">
                 ORBIT
               </span>
-              <span className="text-[8px] font-mono font-bold text-indigo-400/80 uppercase tracking-widest">
-                v2.0
+              <span className="font-logo font-bold text-xs text-indigo-400/90 tracking-wide">
+                v2
               </span>
             </div>
           ) : (
-            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-indigo-600/30 to-purple-600/30 border border-indigo-500/40 flex items-center justify-center text-white font-logo font-bold text-base shadow-md mx-auto">
+            <span className="font-logo font-black text-2xl text-white group-hover:text-indigo-300 transition-colors mx-auto block text-center">
               O
-            </div>
+            </span>
           )}
         </Link>
 
@@ -86,11 +86,11 @@ export function Sidebar({
         )}
       </div>
 
-      {/* 2. MAIN NAVIGATION */}
-      <div className="flex-1 py-5 px-3 space-y-3 overflow-y-auto">
+      {/* 2. MAIN NAVIGATION (SMOOTH, NO JUMPING, NO ICON BACKGROUNDS) */}
+      <div className="flex-1 py-5 px-3 space-y-2 overflow-y-auto">
         <div className="space-y-1">
-          {/* SECTION 1: Problem Solving Tracker (Expandable) */}
-          <div className="rounded-2xl transition-colors">
+          {/* SECTION 1: Problem Solving Tracker */}
+          <div className="rounded-xl">
             <button
               type="button"
               onClick={() => {
@@ -98,23 +98,19 @@ export function Sidebar({
                 setTrackerExpanded(!trackerExpanded);
               }}
               className={cn(
-                "w-full flex items-center justify-between gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition-all cursor-pointer group",
+                "w-full flex items-center justify-between gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition-colors cursor-pointer group",
                 isTrackerActive
-                  ? "bg-white/[0.06] text-[var(--text-primary)] shadow-sm border border-white/[0.08]"
-                  : "text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-white/[0.03]"
+                  ? "bg-white/[0.08] text-white"
+                  : "text-slate-400 hover:text-white hover:bg-white/[0.04]"
               )}
             >
               <div className="flex items-center gap-2.5 min-w-0">
-                <div
+                <Code2
                   className={cn(
-                    "p-1.5 rounded-lg transition-colors",
-                    isTrackerActive
-                      ? "bg-indigo-500/20 text-[var(--accent-text)] border border-indigo-500/30"
-                      : "bg-white/[0.04] text-[var(--text-muted)] group-hover:text-[var(--text-secondary)]"
+                    "w-4 h-4 shrink-0 transition-colors",
+                    isTrackerActive ? "text-indigo-400" : "text-slate-400 group-hover:text-slate-200"
                   )}
-                >
-                  <Code2 className="w-4 h-4" />
-                </div>
+                />
                 {!collapsed && (
                   <span className="truncate text-xs font-medium">Problem Tracker</span>
                 )}
@@ -123,8 +119,8 @@ export function Sidebar({
               {!collapsed && (
                 <ChevronDown
                   className={cn(
-                    "w-3.5 h-3.5 text-[var(--text-muted)] transition-transform duration-200",
-                    trackerExpanded && "rotate-180 text-[var(--text-secondary)]"
+                    "w-3.5 h-3.5 text-slate-500 transition-transform duration-200",
+                    trackerExpanded && "rotate-180 text-slate-300"
                   )}
                 />
               )}
@@ -145,10 +141,10 @@ export function Sidebar({
                     href="/workspace"
                     onClick={onMobileClose}
                     className={cn(
-                      "flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium transition-all group",
+                      "flex items-center gap-2.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors group",
                       pathname === "/workspace" || pathname === "/"
-                        ? "bg-indigo-500/15 text-[var(--accent-text)] font-semibold border border-indigo-500/30"
-                        : "text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-white/[0.04]"
+                        ? "bg-indigo-500/20 text-indigo-300 font-semibold"
+                        : "text-slate-400 hover:text-white hover:bg-white/[0.04]"
                     )}
                   >
                     <LayoutGrid className="w-3.5 h-3.5 shrink-0" />
@@ -160,10 +156,10 @@ export function Sidebar({
                     href="/find-people"
                     onClick={onMobileClose}
                     className={cn(
-                      "flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium transition-all group",
+                      "flex items-center gap-2.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors group",
                       pathname === "/find-people" || pathname.startsWith("/profile")
-                        ? "bg-indigo-500/15 text-[var(--accent-text)] font-semibold border border-indigo-500/30"
-                        : "text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-white/[0.04]"
+                        ? "bg-indigo-500/20 text-indigo-300 font-semibold"
+                        : "text-slate-400 hover:text-white hover:bg-white/[0.04]"
                     )}
                   >
                     <Users className="w-3.5 h-3.5 shrink-0" />
@@ -179,30 +175,26 @@ export function Sidebar({
             href="/yt-extractor"
             onClick={onMobileClose}
             className={cn(
-              "flex items-center justify-between gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition-all group cursor-pointer",
+              "flex items-center justify-between gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition-colors group cursor-pointer",
               isYtActive
-                ? "bg-white/[0.06] text-[var(--text-primary)] shadow-sm border border-white/[0.08]"
-                : "text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-white/[0.03]"
+                ? "bg-white/[0.08] text-white"
+                : "text-slate-400 hover:text-white hover:bg-white/[0.04]"
             )}
           >
             <div className="flex items-center gap-2.5 min-w-0">
-              <div
+              <Tv
                 className={cn(
-                  "p-1.5 rounded-lg transition-colors",
-                  isYtActive
-                    ? "bg-indigo-500/20 text-[var(--accent-text)] border border-indigo-500/30"
-                    : "bg-white/[0.04] text-[var(--text-muted)] group-hover:text-[var(--text-secondary)]"
+                  "w-4 h-4 shrink-0 transition-colors",
+                  isYtActive ? "text-indigo-400" : "text-slate-400 group-hover:text-slate-200"
                 )}
-              >
-                <Tv className="w-4 h-4" />
-              </div>
+              />
               {!collapsed && (
                 <span className="truncate text-xs font-medium">YT Extractor</span>
               )}
             </div>
 
             {!collapsed && (
-              <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-amber-500/15 text-amber-300 border border-amber-500/30 font-mono font-semibold">
+              <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-amber-500/15 text-amber-300 font-mono font-semibold">
                 Soon
               </span>
             )}
@@ -210,26 +202,24 @@ export function Sidebar({
         </div>
       </div>
 
-      {/* 3. SIDEBAR BOTTOM USER PROFILE (CLEAN, NO BOX BACKGROUND, NO ONLINE DOT) */}
+      {/* 3. SIDEBAR BOTTOM USER PROFILE (CLEAN, NO BACKGROUND BOX, NO ONLINE DOT) */}
       <div className="p-3 border-t border-[var(--border-subtle)]">
         <Link
           href="/settings"
           onClick={onMobileClose}
           className={cn(
-            "flex items-center gap-2.5 p-2 rounded-xl transition-all duration-200 group cursor-pointer",
+            "flex items-center gap-2.5 p-1.5 rounded-xl transition-colors group cursor-pointer",
             isSettingsActive
-              ? "bg-indigo-500/15 text-white"
-              : "hover:bg-white/[0.04] text-slate-300 hover:text-white"
+              ? "text-white bg-white/[0.06]"
+              : "text-slate-400 hover:text-white hover:bg-white/[0.04]"
           )}
         >
-          {/* Avatar (No background container, No online dot) */}
           <div className="shrink-0">
             <Avatar
               src={account.avatarUrl}
               fallback={account.displayName}
               size="sm"
               borderColor={account.avatarBorderColor}
-              className="shadow-sm"
             />
           </div>
 

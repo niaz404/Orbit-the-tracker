@@ -38,13 +38,13 @@ export function Header({
   };
 
   return (
-    <header className="h-[60px] border-b border-[var(--border-subtle)] bg-[#06070a]/80 backdrop-blur-2xl sticky top-0 z-20 flex items-center justify-between px-4 sm:px-6">
+    <header className="h-[60px] bg-[#06070a]/80 backdrop-blur-2xl sticky top-0 z-20 flex items-center justify-between px-4 sm:px-6">
       {/* Left: Sidebar Collapse Toggle & Breadcrumbs */}
       <div className="flex items-center gap-3">
         {/* Mobile Menu Trigger */}
         <button
           onClick={onMobileMenuToggle}
-          className="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-white/[0.08] md:hidden cursor-pointer transition-all active:scale-95"
+          className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/[0.08] md:hidden cursor-pointer transition-all active:scale-95"
           aria-label="Open navigation menu"
         >
           <Menu className="w-5 h-5" />
@@ -53,7 +53,7 @@ export function Header({
         {/* Desktop Sidebar Collapse Toggle Button */}
         <button
           onClick={onToggleSidebar}
-          className="hidden md:flex p-2 rounded-xl bg-white/[0.03] hover:bg-white/[0.08] text-slate-400 hover:text-white border border-white/[0.06] hover:border-indigo-500/40 transition-all duration-200 cursor-pointer shadow-sm active:scale-95"
+          className="hidden md:flex p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/[0.06] transition-colors cursor-pointer"
           title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
           aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
         >
@@ -73,7 +73,7 @@ export function Header({
         </div>
       </div>
 
-      {/* Center/Right: Quick Search, Notifications & User Profile Pic */}
+      {/* Center/Right: Quick Search, Notifications & Clean Borderless Profile Pic */}
       <div className="flex items-center gap-3">
         <div className="hidden sm:block w-60 md:w-72">
           <SearchInput
@@ -85,13 +85,13 @@ export function Header({
           />
         </div>
 
-        <div className="flex items-center gap-2 pl-2 border-l border-[var(--border-subtle)]">
+        <div className="flex items-center gap-3">
           <NotificationBell />
 
-          {/* Profile Pic in Header (Replaces 'Orbit Ready') */}
+          {/* Clean Profile Pic (No background box, No border) */}
           <Link
             href="/settings"
-            className="flex items-center gap-2 p-1 pl-1 pr-2.5 rounded-full bg-white/[0.03] hover:bg-white/[0.08] border border-white/[0.06] hover:border-indigo-500/40 transition-all duration-200 group shadow-sm cursor-pointer"
+            className="flex items-center gap-2 p-1 text-slate-300 hover:text-white transition-colors group cursor-pointer"
             title="Open Profile Settings"
           >
             <Avatar
@@ -99,9 +99,8 @@ export function Header({
               fallback={account.displayName}
               size="sm"
               borderColor={account.avatarBorderColor || "#6366f1"}
-              className="ring-1 ring-white/10"
             />
-            <span className="text-xs font-semibold text-slate-200 group-hover:text-white hidden md:inline truncate max-w-[110px]">
+            <span className="text-xs font-medium text-slate-300 group-hover:text-white hidden md:inline truncate max-w-[120px]">
               {account.displayName || "Explorer"}
             </span>
           </Link>
