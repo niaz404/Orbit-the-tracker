@@ -333,7 +333,7 @@ export default function SettingsPage() {
         {/* SECTION 1: LINKEDIN-STYLE CLEAN PROFILE DISPLAY CARD */}
         <div className="rounded-3xl border border-white/[0.1] bg-[#0c0e17] overflow-hidden shadow-2xl relative">
           {/* Panoramic Banner Area (Top) */}
-          <div className="relative w-full h-56 sm:h-64 md:h-72 bg-[#090b14] overflow-hidden group">
+          <div className="relative w-full h-48 sm:h-56 md:h-64 bg-[#090b14] overflow-hidden group">
             {account.bannerUrl?.startsWith("data:") ? (
               <img
                 src={account.bannerUrl}
@@ -344,7 +344,7 @@ export default function SettingsPage() {
               <div className={`w-full h-full ${currentBannerClass || "bg-gradient-to-r from-indigo-950 via-purple-900 to-slate-950"}`} />
             )}
 
-            {/* Banner Edit Trigger */}
+            {/* Banner Edit Circular Button (LinkedIn style top-right) */}
             <input
               type="file"
               ref={bannerInputRef}
@@ -355,20 +355,21 @@ export default function SettingsPage() {
             <button
               type="button"
               onClick={() => bannerInputRef.current?.click()}
-              className="absolute top-4 right-4 p-2.5 px-3.5 rounded-xl bg-black/70 hover:bg-black/90 backdrop-blur-md text-white border border-white/20 flex items-center gap-2 text-xs font-semibold shadow-2xl transition-all cursor-pointer hover:scale-105"
+              className="absolute top-4 right-4 p-2.5 sm:p-3 rounded-full bg-black/60 hover:bg-black/85 backdrop-blur-md text-white border border-white/20 shadow-xl transition-all cursor-pointer hover:scale-110 active:scale-95 group/btn"
+              title="Change Banner Photo"
+              aria-label="Change banner"
             >
-              <Camera className="w-4 h-4 text-cyan-300" />
-              <span>Change Banner</span>
+              <Camera className="w-4 h-4 text-white group-hover/btn:text-cyan-300 transition-colors" />
             </button>
           </div>
 
           {/* Profile Card Body */}
-          <div className="px-6 sm:px-10 pb-8 pt-0 relative bg-gradient-to-b from-[#0c0e17] to-[#080910]">
-            {/* Top Row: Exactly 50% Overlapping Avatar on Left + Clean Action Buttons on Right */}
-            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 -mt-20 sm:-mt-24 md:-mt-24 mb-6 relative z-20">
-              {/* Avatar: 50% Overlap with glow border */}
+          <div className="px-6 sm:px-10 pb-8 relative bg-gradient-to-b from-[#0c0e17] to-[#080910]">
+            {/* Top Row: Overlapping Avatar on Left + Clean Edit Button on Right */}
+            <div className="flex items-start justify-between -mt-16 sm:-mt-20 md:-mt-24 mb-3 relative z-20">
+              {/* Overlapping Avatar: 55% in Banner, 45% in Card */}
               <div className="relative inline-block group shrink-0">
-                <div className="p-1 sm:p-1.5 rounded-full bg-[#0c0e17] shadow-2xl ring-4 ring-[#0c0e17]">
+                <div className="rounded-full bg-[#0c0e17] p-1 sm:p-1.5 shadow-2xl ring-4 sm:ring-6 ring-[#0c0e17]">
                   <Avatar
                     src={account.avatarUrl}
                     fallback={account.displayName}
@@ -389,74 +390,69 @@ export default function SettingsPage() {
                 <button
                   type="button"
                   onClick={() => avatarInputRef.current?.click()}
-                  className="absolute bottom-2 right-2 sm:bottom-3 sm:right-3 p-2.5 sm:p-3 rounded-full bg-indigo-600 hover:bg-indigo-500 text-white shadow-xl border-2 border-[#0c0e17] cursor-pointer transition-all hover:scale-110 active:scale-95"
+                  className="absolute bottom-1 right-1 sm:bottom-2 sm:right-2 p-2 sm:p-2.5 rounded-full bg-indigo-600 hover:bg-indigo-500 text-white shadow-xl border-2 border-[#0c0e17] cursor-pointer transition-all hover:scale-110 active:scale-95"
                   title="Upload & Crop Avatar"
                   aria-label="Upload photo"
                 >
-                  <Camera className="w-4 h-4 sm:w-4.5 sm:h-4.5" />
+                  <Camera className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                 </button>
               </div>
 
-              {/* Action Buttons: Clean "Edit Profile" and "Change Photo" */}
-              <div className="flex items-center gap-3 flex-wrap pt-2 sm:pt-0">
+              {/* Action Buttons in Top-Right of Card Body (LinkedIn style) */}
+              <div className="pt-2 sm:pt-4 flex items-center gap-2.5">
                 <Button
                   variant="secondary"
                   size="sm"
-                  onClick={() => avatarInputRef.current?.click()}
-                  leftIcon={<Camera className="w-4 h-4 text-indigo-300" />}
-                >
-                  Change Photo
-                </Button>
-                <Button
-                  variant="primary"
-                  size="sm"
                   onClick={handleOpenEditModal}
-                  leftIcon={<Edit3 className="w-4 h-4 text-white" />}
+                  leftIcon={<Edit3 className="w-4 h-4 text-indigo-300" />}
+                  className="shadow-md"
                 >
                   Edit Profile
                 </Button>
               </div>
             </div>
 
-            {/* Profile Identity & Details Display (Clean View Mode) */}
-            <div className="space-y-4">
-              <div className="flex items-center gap-3 flex-wrap">
-                <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-white tracking-tight">
-                  {account.displayName || "Explorer"}
-                </h1>
-                <Badge variant="accent" dot>Active Solver</Badge>
+            {/* Profile Identity & Details Display */}
+            <div className="space-y-3">
+              <div>
+                <div className="flex items-center gap-3 flex-wrap">
+                  <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-white tracking-tight">
+                    {account.displayName || "Explorer"}
+                  </h1>
+                  <Badge variant="accent" dot>Active Solver</Badge>
+                </div>
+
+                <div className="flex items-center gap-3 text-xs text-[var(--text-secondary)] flex-wrap pt-1.5">
+                  <span className="font-mono font-bold text-indigo-300 text-sm">
+                    @{account.username || "orbit_user"}
+                  </span>
+                  <span className="text-[var(--text-muted)]">•</span>
+                  <span className="flex items-center gap-1.5 text-[var(--text-muted)]">
+                    <Layers className="w-3.5 h-3.5 text-indigo-400" />
+                    <span>{bookmarkCount} Bookmarked Solvers</span>
+                  </span>
+                  <span className="text-[var(--text-muted)]">•</span>
+                  <span className="flex items-center gap-1.5">
+                    <Key className="w-3.5 h-3.5 text-cyan-400" />
+                    {account.uniqueCode ? (
+                      <span className="font-mono text-cyan-300 font-semibold">{account.uniqueCode}</span>
+                    ) : (
+                      <span className="text-amber-400 font-medium">Migration Key Not Generated</span>
+                    )}
+                  </span>
+                </div>
               </div>
 
-              <div className="flex items-center gap-4 text-xs text-[var(--text-secondary)] flex-wrap">
-                <span className="font-mono font-bold text-indigo-300 text-sm">
-                  @{account.username || "orbit_user"}
-                </span>
-                <span className="flex items-center gap-1.5 text-[var(--text-muted)]">
-                  <Layers className="w-3.5 h-3.5 text-indigo-400" />
-                  <span>{bookmarkCount} Bookmarked Solvers</span>
-                </span>
-                <span className="flex items-center gap-1.5">
-                  <Key className="w-3.5 h-3.5 text-cyan-400" />
-                  {account.uniqueCode ? (
-                    <span className="font-mono text-cyan-300 font-semibold">{account.uniqueCode}</span>
-                  ) : (
-                    <span className="text-amber-400 font-medium">Migration Key Not Generated</span>
-                  )}
-                </span>
-              </div>
-
-              {/* Bio / About display */}
-              <div className="pt-2">
-                {account.bio ? (
-                  <p className="text-xs sm:text-sm text-slate-300 leading-relaxed max-w-3xl border-l-2 border-indigo-500/40 pl-3.5 py-1">
-                    {account.bio}
-                  </p>
-                ) : (
-                  <p className="text-xs text-[var(--text-muted)] italic">
-                    No bio added yet. Click &quot;Edit Profile&quot; to add your competitive programming goals.
-                  </p>
-                )}
-              </div>
+              {/* Bio / Headline text */}
+              {account.bio ? (
+                <p className="text-xs sm:text-sm text-slate-300 leading-relaxed max-w-3xl pt-1">
+                  {account.bio}
+                </p>
+              ) : (
+                <p className="text-xs text-[var(--text-muted)] italic pt-1">
+                  No bio added yet. Click &quot;Edit Profile&quot; to add your competitive programming goals.
+                </p>
+              )}
             </div>
           </div>
         </div>
