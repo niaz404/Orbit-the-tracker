@@ -15,6 +15,8 @@ import {
   LayoutGrid,
   Settings,
   Sparkles,
+  PanelLeftClose,
+  PanelLeftOpen,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Avatar } from "@/components/ui/avatar";
@@ -50,55 +52,57 @@ export function Sidebar({ isMobileOpen, onMobileClose }) {
 
   const sidebarContent = (
     <div className="flex flex-col h-full bg-[var(--bg-sidebar)] backdrop-blur-2xl border-r border-[var(--border-subtle)] select-none">
-      {/* BIG, BOLD, IMPACTFUL BRAND LOGO (PURE TYPOGRAPHY, NO ICONS) */}
-      <div className="h-20 px-6 flex items-center justify-between border-b border-[var(--border-subtle)] bg-white/[0.01]">
+      {/* 1. BRAND LOGO HEADER WITH STYLISH TYPOGRAPHY (OUTFIT) & SLEEK TOGGLE */}
+      <div className="h-20 px-5 flex items-center justify-between border-b border-[var(--border-subtle)] bg-white/[0.01]">
         <Link
           href="/workspace"
           onClick={onMobileClose}
-          className="flex items-center group cursor-pointer"
+          className="flex items-center gap-3 group cursor-pointer"
         >
           {!collapsed ? (
             <div className="flex flex-col">
-              <span className="font-black text-2xl tracking-tighter bg-gradient-to-r from-white via-slate-100 to-indigo-200 bg-clip-text text-transparent group-hover:from-indigo-300 group-hover:to-cyan-300 transition-all duration-300">
+              <span className="font-brand font-black text-2xl tracking-[-0.03em] bg-gradient-to-r from-white via-slate-100 to-indigo-200 bg-clip-text text-transparent group-hover:from-indigo-300 group-hover:to-cyan-300 transition-all duration-300">
                 ORBIT
               </span>
-              <span className="text-[9px] font-bold text-indigo-400 tracking-[0.25em] uppercase">
+              <span className="text-[9px] font-bold text-indigo-400 tracking-[0.28em] uppercase -mt-0.5">
                 GROWTH ENGINE
               </span>
             </div>
           ) : (
-            <span className="font-black text-xl tracking-tighter bg-gradient-to-r from-white to-indigo-300 bg-clip-text text-transparent">
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-600/30 to-purple-600/30 border border-indigo-500/40 flex items-center justify-center text-white font-brand font-black text-lg shadow-md group-hover:scale-105 transition-all">
               O
-            </span>
+            </div>
           )}
         </Link>
 
-        {/* Top-Right Collapse Toggle */}
+        {/* Sleek Collapse Toggle Button */}
         <div className="flex items-center">
           {isMobileOpen ? (
             <button
               onClick={onMobileClose}
-              className="p-2 rounded-xl text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-white/[0.06] md:hidden cursor-pointer transition-colors"
+              className="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-white/[0.08] md:hidden cursor-pointer transition-all active:scale-95"
+              aria-label="Close sidebar"
             >
               <X className="w-5 h-5" />
             </button>
           ) : (
             <button
               onClick={() => setCollapsed(!collapsed)}
-              className="hidden md:flex p-1.5 rounded-xl text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-white/[0.06] cursor-pointer transition-colors"
+              className="hidden md:flex p-2 rounded-xl bg-white/[0.03] hover:bg-white/[0.08] text-slate-400 hover:text-white border border-white/[0.06] hover:border-indigo-500/40 transition-all duration-200 cursor-pointer shadow-sm active:scale-95 hover:scale-105"
               title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+              aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
             >
               {collapsed ? (
-                <ChevronRight className="w-4 h-4" />
+                <PanelLeftOpen className="w-4 h-4 text-indigo-300" />
               ) : (
-                <ChevronLeft className="w-4 h-4" />
+                <PanelLeftClose className="w-4 h-4 text-slate-400 hover:text-indigo-300" />
               )}
             </button>
           )}
         </div>
       </div>
 
-      {/* Main Navigation — Exactly 2 sections */}
+      {/* 2. MAIN NAVIGATION */}
       <div className="flex-1 py-6 px-3.5 space-y-3 overflow-y-auto">
         <div className="space-y-1.5">
           {/* SECTION 1: Problem Solving Tracker (Expandable) */}
@@ -128,7 +132,7 @@ export function Sidebar({ isMobileOpen, onMobileClose }) {
                   <Code2 className="w-4 h-4" />
                 </div>
                 {!collapsed && (
-                  <span className="truncate text-[13px]">Problem Tracker</span>
+                  <span className="truncate text-[13px] font-medium">Problem Tracker</span>
                 )}
               </div>
 
@@ -152,7 +156,7 @@ export function Sidebar({ isMobileOpen, onMobileClose }) {
                   transition={{ duration: 0.18, ease: "easeInOut" }}
                   className="overflow-hidden pl-5 pr-1 pt-1.5 space-y-1"
                 >
-                  {/* Sub-item: Workspace */}
+                  {/* Workspace */}
                   <Link
                     href="/workspace"
                     onClick={onMobileClose}
@@ -167,7 +171,7 @@ export function Sidebar({ isMobileOpen, onMobileClose }) {
                     <span>Workspace</span>
                   </Link>
 
-                  {/* Sub-item: Find People */}
+                  {/* Find People */}
                   <Link
                     href="/find-people"
                     onClick={onMobileClose}
@@ -209,7 +213,7 @@ export function Sidebar({ isMobileOpen, onMobileClose }) {
                 <Tv className="w-4 h-4" />
               </div>
               {!collapsed && (
-                <span className="truncate text-[13px]">YT Extractor</span>
+                <span className="truncate text-[13px] font-medium">YT Extractor</span>
               )}
             </div>
 
@@ -222,27 +226,41 @@ export function Sidebar({ isMobileOpen, onMobileClose }) {
         </div>
       </div>
 
-      {/* Sidebar Bottom: Sleek User Profile Widget */}
-      <div className="p-3 border-t border-[var(--border-subtle)] bg-black/20">
+      {/* 3. SIDEBAR BOTTOM USER PROFILE WIDGET */}
+      <div className="p-3 border-t border-[var(--border-subtle)] bg-black/25">
         <Link
           href="/settings"
           onClick={onMobileClose}
           className={cn(
-            "flex items-center gap-3 p-2 rounded-2xl transition-all duration-200 group cursor-pointer border",
+            "flex items-center gap-3 p-2.5 rounded-2xl transition-all duration-200 group cursor-pointer border",
             isSettingsActive
               ? "bg-indigo-500/15 border-indigo-500/40 text-white shadow-lg shadow-indigo-500/10"
-              : "border-white/[0.06] bg-[#0a0c16]/80 hover:bg-[#101426] hover:border-white/[0.15] shadow-md"
+              : "border-white/[0.06] bg-[#0a0c16]/85 hover:bg-[#121626] hover:border-white/[0.15] shadow-md"
           )}
         >
+          {/* Avatar Container with glowing border ring */}
           <div className="relative shrink-0">
-            <Avatar
-              src={account.avatarUrl}
-              fallback={account.displayName}
-              size="md"
-              status="online"
-              borderColor={account.avatarBorderColor}
-              className="shrink-0 shadow-md ring-2 ring-[#0a0c16]"
-            />
+            <div
+              style={{
+                borderColor: account.avatarBorderColor || "#6366f1",
+                boxShadow: `0 0 16px ${(account.avatarBorderColor || "#6366f1")}35`,
+              }}
+              className="w-10 h-10 rounded-full border-2 overflow-hidden bg-[#0d101a] ring-2 ring-[#0c0e17] shadow-lg flex items-center justify-center"
+            >
+              {account.avatarUrl ? (
+                <img
+                  src={account.avatarUrl}
+                  alt={account.displayName}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <span className="text-xs font-bold text-slate-300">
+                  {(account.displayName || "E").slice(0, 2).toUpperCase()}
+                </span>
+              )}
+            </div>
+            {/* Glowing online status indicator */}
+            <span className="absolute bottom-0 right-0 w-3 h-3 rounded-full bg-emerald-400 border-2 border-[#0c0e17] shadow-[0_0_8px_rgba(16,185,129,0.8)]" />
           </div>
 
           {!collapsed && (
@@ -267,7 +285,7 @@ export function Sidebar({ isMobileOpen, onMobileClose }) {
 
   return (
     <>
-      {/* Desktop Persistent Glass Sidebar */}
+      {/* Desktop Persistent Stationary Glass Sidebar */}
       <aside
         className={cn(
           "hidden md:flex flex-col shrink-0 h-screen sticky top-0 transition-all duration-300 z-30",
