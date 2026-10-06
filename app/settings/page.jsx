@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import {
   User,
   Camera,
@@ -21,6 +21,10 @@ import {
   Key,
   Palette,
   Image as ImageIcon,
+  Edit3,
+  MapPin,
+  Calendar,
+  Layers,
 } from "lucide-react";
 import { PageLayout } from "@/components/layout/page-layout";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
@@ -41,8 +45,8 @@ import {
 import { slideUp, fadeIn } from "@/lib/animations";
 
 const BANNER_GRADIENTS = [
-  { id: "gradient:indigo-purple", name: "Aurora Violet", css: "bg-gradient-to-r from-indigo-900 via-purple-900 to-slate-900" },
-  { id: "gradient:cyan-blue", name: "Cyberpunk Cyan", css: "bg-gradient-to-r from-cyan-900 via-blue-900 to-indigo-950" },
+  { id: "gradient:indigo-purple", name: "Aurora Violet", css: "bg-gradient-to-r from-indigo-950 via-purple-900 to-slate-950" },
+  { id: "gradient:cyan-blue", name: "Cyberpunk Cyan", css: "bg-gradient-to-r from-cyan-950 via-blue-900 to-indigo-950" },
   { id: "gradient:emerald-teal", name: "Emerald Matrix", css: "bg-gradient-to-r from-emerald-950 via-teal-900 to-slate-950" },
   { id: "gradient:rose-amber", name: "Solar Dusk", css: "bg-gradient-to-r from-rose-950 via-amber-950 to-purple-950" },
 ];
@@ -55,7 +59,8 @@ export default function SettingsPage() {
     avatarUrl: "",
     avatarBorderColor: "#6366f1",
     bannerUrl: "gradient:indigo-purple",
-    bio: "",
+    bio: "Focusing on competitive programming and problem-solving roadmaps.",
+    createdAt: new Date().toISOString(),
   });
 
   const [displayNameInput, setDisplayNameInput] = useState("Explorer");
@@ -221,7 +226,7 @@ export default function SettingsPage() {
   return (
     <PageLayout
       title="User Profile & Settings"
-      description="Customize your personal avatar, banner, border color, and backup your workspace roadmap matrix."
+      description="Manage your profile identity, custom photo banner, and secure backup keys."
       badge={<Badge variant="accent">Cloud Migration Ready</Badge>}
     >
       <motion.div
@@ -230,10 +235,10 @@ export default function SettingsPage() {
         animate="visible"
         className="max-w-4xl mx-auto space-y-8"
       >
-        {/* SECTION 1: STUDIO-GRADE PROFILE CARD & BANNER SHOWCASE */}
-        <Card variant="primary" className="overflow-hidden border-white/[0.1] shadow-2xl">
-          {/* BANNER AREA */}
-          <div className="relative w-full h-44 sm:h-52 bg-[#090b14] overflow-hidden group">
+        {/* SECTION 1: LINKEDIN-STYLE PROFILE CARD WITH 50% OVERLAPPING AVATAR */}
+        <div className="rounded-3xl border border-white/[0.1] bg-[#0c0e17] overflow-hidden shadow-2xl relative">
+          {/* Panoramic Banner Area (Top) */}
+          <div className="relative w-full h-56 sm:h-64 md:h-72 bg-[#090b14] overflow-hidden group">
             {selectedBanner.startsWith("data:") ? (
               <img
                 src={selectedBanner}
@@ -244,39 +249,41 @@ export default function SettingsPage() {
               <div className={`w-full h-full ${currentBannerClass || "bg-gradient-to-r from-indigo-950 via-purple-900 to-slate-950"}`} />
             )}
 
-            {/* Banner Overlay Controls */}
-            <div className="absolute inset-0 bg-black/30 backdrop-blur-[2px] opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3 p-4">
-              <input
-                type="file"
-                ref={bannerInputRef}
-                accept="image/*"
-                onChange={handleBannerFileSelect}
-                className="hidden"
-              />
-              <Button
-                variant="secondary"
-                size="sm"
-                onClick={() => bannerInputRef.current?.click()}
-                leftIcon={<Camera className="w-4 h-4 text-cyan-300" />}
-                className="bg-black/60 backdrop-blur-md border-white/20"
-              >
-                Upload Banner
-              </Button>
-            </div>
+            {/* Banner Camera Edit Trigger */}
+            <input
+              type="file"
+              ref={bannerInputRef}
+              accept="image/*"
+              onChange={handleBannerFileSelect}
+              className="hidden"
+            />
+            <button
+              type="button"
+              onClick={() => bannerInputRef.current?.click()}
+              className="absolute top-4 right-4 p-2.5 px-3.5 rounded-xl bg-black/70 hover:bg-black/90 backdrop-blur-md text-white border border-white/20 flex items-center gap-2 text-xs font-semibold shadow-2xl transition-all cursor-pointer hover:scale-105"
+            >
+              <Camera className="w-4 h-4 text-cyan-300" />
+              <span>Change Banner</span>
+            </button>
           </div>
 
-          {/* AVATAR + PROFILE HEADER ROW */}
-          <div className="px-6 pb-6 pt-0 relative bg-white/[0.01]">
-            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 -mt-16 sm:-mt-20 mb-6">
-              {/* Avatar with Camera Overlay */}
-              <div className="relative inline-block group">
-                <Avatar
-                  src={account.avatarUrl}
-                  fallback={displayNameInput}
-                  size="2xl"
-                  borderColor={selectedBorderColor}
-                  className="shadow-2xl border-4 ring-4 ring-[#06070a]"
-                />
+          {/* Profile Card Body (Avatar 50% Overlapping Banner & 50% in Card) */}
+          <div className="px-6 sm:px-10 pb-8 pt-0 relative bg-gradient-to-b from-[#0c0e17] to-[#080910]">
+            {/* Top Row: Exactly 50% Overlapping Avatar on Left + Actions on Right */}
+            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 -mt-20 sm:-mt-24 md:-mt-24 mb-6 relative z-20">
+              {/* Avatar (Large 4xl: half inside banner, half in card body) */}
+              <div className="relative inline-block group shrink-0">
+                <div className="p-1 sm:p-1.5 rounded-full bg-[#0c0e17] shadow-2xl ring-4 ring-[#0c0e17]">
+                  <Avatar
+                    src={account.avatarUrl}
+                    fallback={displayNameInput}
+                    size="4xl"
+                    borderColor={selectedBorderColor}
+                    className="shadow-2xl bg-[#090b14] block"
+                  />
+                </div>
+
+                {/* Camera upload floating trigger */}
                 <input
                   type="file"
                   ref={avatarInputRef}
@@ -287,22 +294,23 @@ export default function SettingsPage() {
                 <button
                   type="button"
                   onClick={() => avatarInputRef.current?.click()}
-                  className="absolute inset-0 m-auto w-10 h-10 rounded-full bg-black/70 backdrop-blur-md text-white border border-white/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all scale-95 group-hover:scale-100 cursor-pointer shadow-lg"
+                  className="absolute bottom-2 right-2 sm:bottom-3 sm:right-3 p-2.5 sm:p-3 rounded-full bg-indigo-600 hover:bg-indigo-500 text-white shadow-xl border-2 border-[#0c0e17] cursor-pointer transition-all hover:scale-110 active:scale-95"
                   title="Upload & Crop Avatar"
+                  aria-label="Upload photo"
                 >
-                  <Camera className="w-5 h-5 text-indigo-300" />
+                  <Camera className="w-4 h-4 sm:w-4.5 sm:h-4.5" />
                 </button>
               </div>
 
-              {/* Quick Actions & Code Badge */}
-              <div className="flex items-center gap-2.5 flex-wrap">
+              {/* Action Buttons on Right */}
+              <div className="flex items-center gap-3 flex-wrap pt-2 sm:pt-0">
                 <Button
                   variant="secondary"
                   size="sm"
                   onClick={() => avatarInputRef.current?.click()}
                   leftIcon={<Camera className="w-4 h-4 text-indigo-300" />}
                 >
-                  Change Avatar
+                  Change Photo
                 </Button>
                 <Button
                   variant="primary"
@@ -315,8 +323,38 @@ export default function SettingsPage() {
               </div>
             </div>
 
-            {/* FORM INPUTS */}
-            <form onSubmit={handleSaveProfile} className="space-y-6">
+            {/* LinkedIn-Style Identity Headline */}
+            <div className="space-y-3 pb-6 border-b border-[var(--border-subtle)]">
+              <div className="flex items-center gap-3 flex-wrap">
+                <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-white tracking-tight">
+                  {displayNameInput || "Explorer"}
+                </h1>
+                <Badge variant="accent" dot>Active Solver</Badge>
+              </div>
+
+              <div className="flex items-center gap-4 text-xs text-[var(--text-secondary)] flex-wrap">
+                <span className="font-mono font-semibold text-indigo-300 text-sm">
+                  @{usernameInput.toLowerCase().replace(/[@\s]/g, "") || "orbit_user"}
+                </span>
+                <span className="flex items-center gap-1.5 text-[var(--text-muted)]">
+                  <Layers className="w-3.5 h-3.5 text-indigo-400" />
+                  <span>{bookmarkCount} Bookmarked Solvers</span>
+                </span>
+                <span className="flex items-center gap-1.5 text-[var(--text-muted)]">
+                  <Key className="w-3.5 h-3.5 text-cyan-400" />
+                  <span className="font-mono">{account.uniqueCode}</span>
+                </span>
+              </div>
+
+              {bioInput && (
+                <p className="text-xs sm:text-sm text-slate-300 leading-relaxed max-w-2xl pt-1">
+                  {bioInput}
+                </p>
+              )}
+            </div>
+
+            {/* EDITABLE PROFILE FORM */}
+            <form onSubmit={handleSaveProfile} className="space-y-6 pt-6">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                 <Input
                   label="Display Name"
@@ -335,13 +373,12 @@ export default function SettingsPage() {
                 />
               </div>
 
-              {/* BIO */}
               <div className="space-y-1.5">
                 <label className="block text-xs font-medium text-[var(--text-secondary)]">
-                  About Me / Bio
+                  About / Bio Headline
                 </label>
                 <textarea
-                  rows={2}
+                  rows={3}
                   value={bioInput}
                   onChange={(e) => setBioInput(e.target.value)}
                   placeholder="Share your problem-solving goals or learning roadmap..."
@@ -390,18 +427,18 @@ export default function SettingsPage() {
               <div className="space-y-3 pt-4 border-t border-[var(--border-subtle)]">
                 <label className="text-xs font-semibold text-[var(--text-primary)] flex items-center gap-1.5">
                   <ImageIcon className="w-3.5 h-3.5 text-indigo-400" />
-                  <span>Banner Preset Backgrounds</span>
+                  <span>Preset Banner Backgrounds</span>
                 </label>
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                   {BANNER_GRADIENTS.map((b) => (
                     <button
                       key={b.id}
                       type="button"
                       onClick={() => setSelectedBanner(b.id)}
-                      className={`h-12 rounded-xl border p-2 flex items-end text-[10px] font-bold text-white transition-all cursor-pointer ${b.css} ${
+                      className={`h-14 rounded-2xl border p-2.5 flex items-end text-[11px] font-bold text-white transition-all cursor-pointer ${b.css} ${
                         selectedBanner === b.id
                           ? "border-indigo-400 ring-2 ring-indigo-500/50 shadow-lg"
-                          : "border-white/10 hover:border-white/30 opacity-70 hover:opacity-100"
+                          : "border-white/10 hover:border-white/30 opacity-75 hover:opacity-100"
                       }`}
                     >
                       <span>{b.name}</span>
@@ -411,7 +448,7 @@ export default function SettingsPage() {
               </div>
             </form>
           </div>
-        </Card>
+        </div>
 
         {/* SECTION 2: UNIQUE MIGRATION CODE NUMBER & NOTICE CARD */}
         <Card variant="primary" className="border-indigo-500/30 bg-indigo-500/[0.03]">
@@ -448,7 +485,7 @@ export default function SettingsPage() {
               </Button>
             </div>
 
-            {/* PROMINENT DATABASE NOTICE AS INSTRUCTED */}
+            {/* PROMINENT DATABASE NOTICE */}
             <div className="p-4 rounded-xl bg-indigo-500/10 border border-indigo-500/20 text-xs text-indigo-200/90 leading-relaxed flex items-start gap-3">
               <Info className="w-5 h-5 text-indigo-400 shrink-0 mt-0.5" />
               <p>
