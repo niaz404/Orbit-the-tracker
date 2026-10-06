@@ -3,32 +3,20 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import {
   ExternalLink,
-  Search,
-  CheckCircle2,
-  Clock,
-  CircleDot,
-  FileText,
-  Filter,
   RefreshCw,
   AlertCircle,
   Sparkles,
-  ArrowLeft,
-  ChevronDown,
   Check,
   BookmarkPlus,
   BookmarkCheck,
   Maximize2,
   User,
-  X,
 } from "lucide-react";
 import { PageLayout } from "@/components/layout/page-layout";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Avatar } from "@/components/ui/avatar";
-import { Progress } from "@/components/ui/progress";
 import { SearchInput } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { EmptyState } from "@/components/ui/empty-state";
@@ -57,7 +45,7 @@ import {
   isBookmarked,
   removeBookmark,
 } from "@/lib/storage";
-import { slideUp, fadeIn } from "@/lib/animations";
+import { fadeIn } from "@/lib/animations";
 import { cn } from "@/lib/utils";
 
 export default function ProblemTrackerPage() {
@@ -74,16 +62,13 @@ export default function ProblemTrackerPage() {
   const [statusFilter, setStatusFilter] = useState("all");
   const [bookmarked, setBookmarked] = useState(false);
 
-  // Pagination states (protects PC performance on solvers with thousands of problems)
+  // Pagination states: 15 problems per page by default
   const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(50);
+  const [pageSize, setPageSize] = useState(15);
   
   // Expanded note modal state
   const [activeNoteProblem, setActiveNoteProblem] = useState(null);
   const [noteModalText, setNoteModalText] = useState("");
-
-  // Save feedback state
-  const [lastSavedId, setLastSavedId] = useState(null);
 
   // Fetch solver profile & submissions
   const loadTrackerData = async () => {
@@ -135,28 +120,18 @@ export default function ProblemTrackerPage() {
   const handleStatusChange = (problemId, newStatus) => {
     const updated = saveProblemProgress(handle, problemId, { status: newStatus });
     setProgressMap(updated);
-    flashSaved(problemId);
   };
 
   // Update Time
   const handleTimeChange = (problemId, newTime) => {
     const updated = saveProblemProgress(handle, problemId, { time: newTime });
     setProgressMap(updated);
-    flashSaved(problemId);
   };
 
   // Update Notes
   const handleNotesChange = (problemId, newNotes) => {
     const updated = saveProblemProgress(handle, problemId, { notes: newNotes });
     setProgressMap(updated);
-    flashSaved(problemId);
-  };
-
-  const flashSaved = (problemId) => {
-    setLastSavedId(problemId);
-    setTimeout(() => {
-      setLastSavedId((curr) => (curr === problemId ? null : curr));
-    }, 2000);
   };
 
   // Toggle Bookmark
@@ -182,7 +157,7 @@ export default function ProblemTrackerPage() {
     setActiveNoteProblem(null);
   };
 
-  // Calculate Progress Stats
+  // Calculate Status Counts
   const stats = useMemo(() => {
     const total = problems.length;
     let completed = 0;
@@ -196,9 +171,7 @@ export default function ProblemTrackerPage() {
       else notStarted++;
     }
 
-    const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;
-
-    return { total, completed, inProgress, notStarted, percentage };
+    return { total, completed, inProgress, notStarted };
   }, [problems, progressMap]);
 
   // Filter Problems
@@ -213,7 +186,7 @@ export default function ProblemTrackerPage() {
     });
   }, [problems, searchQuery, statusFilter, progressMap]);
 
-  // Paginated Slice of Problems
+  // Paginated Slice of Problems (15 per page)
   const paginatedProblems = useMemo(() => {
     const start = (currentPage - 1) * pageSize;
     return filteredProblems.slice(start, start + pageSize);
@@ -222,7 +195,6 @@ export default function ProblemTrackerPage() {
   return (
     <PageLayout
       title={`${handle}'s Problem Roadmap`}
-      description="Chronological problem-solving roadmap derived from historical accepted submissions. Spoiler-free: only problem names and external links are shown."
       breadcrumbs={
         <div className="flex items-center gap-1.5 text-xs text-[var(--text-muted)]">
           <Link href="/workspace" className="hover:text-[var(--text-primary)] transition-colors">
@@ -274,81 +246,12 @@ export default function ProblemTrackerPage() {
         </div>
       }
     >
-      <div className="space-y-6">
-        {/* Solver Stats Card & Progress */}
-        {!isLoading && !error && problems.length > 0 && (
-          <motion.div
-            variants={slideUp}
-            initial="hidden"
-            animate="visible"
-            className="p-5 sm:p-6 rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-glass-card)] backdrop-blur-xl shadow-xl shadow-black/30 space-y-4"
-          >
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-              <div className="flex items-center gap-4">
-                <Avatar
-                  src={profile?.avatar}
-                  fallback={handle}
-                  size="xl"
-                  className="border-2 border-indigo-500/40 shrink-0"
-                />
-                <div>
-                  <div className="flex items-center gap-2.5">
-                    <h2 className="text-lg font-bold text-[var(--text-primary)]">
-                      {handle}
-                    </h2>
-                    {profile?.rating > 0 && (
-                      <Badge rating={profile.rating}>
-                        {profile.rating}
-                      </Badge>
-                    )}
-                  </div>
-                  <p className="text-xs text-[var(--text-secondary)] capitalize mt-0.5">
-                    {profile?.rank || "Codeforces Solver"} • <strong className="text-white font-mono">{stats.total}</strong> Unique Solved Problems
-                  </p>
-                </div>
-              </div>
-
-              {/* Progress Counters */}
-              <div className="flex items-center gap-4 sm:gap-6 text-xs">
-                <div className="text-center sm:text-left">
-                  <span className="text-[var(--text-muted)] block text-[11px]">Completed</span>
-                  <span className="font-mono font-bold text-emerald-400 text-sm">
-                    {stats.completed}
-                  </span>
-                </div>
-                <div className="text-center sm:text-left">
-                  <span className="text-[var(--text-muted)] block text-[11px]">In Progress</span>
-                  <span className="font-mono font-bold text-amber-400 text-sm">
-                    {stats.inProgress}
-                  </span>
-                </div>
-                <div className="text-center sm:text-left">
-                  <span className="text-[var(--text-muted)] block text-[11px]">Remaining</span>
-                  <span className="font-mono font-bold text-[var(--text-muted)] text-sm">
-                    {stats.notStarted}
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            {/* Progress Bar */}
-            <div className="pt-2 border-t border-[var(--border-subtle)] space-y-1.5">
-              <div className="flex justify-between text-xs font-medium">
-                <span className="text-[var(--text-secondary)]">Your Roadmap Progress</span>
-                <span className="font-mono text-indigo-300 font-bold">
-                  {stats.completed} / {stats.total} ({stats.percentage}%)
-                </span>
-              </div>
-              <Progress value={stats.completed} max={stats.total} className="h-2" />
-            </div>
-          </motion.div>
-        )}
-
-        {/* Filter / Search Bar */}
+      <div className="space-y-4">
+        {/* Compact Filter / Search Bar directly above the Sheet */}
         {!isLoading && !error && problems.length > 0 && (
           <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
             {/* Status Filter Buttons */}
-            <div className="flex items-center gap-1.5 p-1 bg-white/[0.03] border border-[var(--border-subtle)] rounded-xl w-full sm:w-auto overflow-x-auto">
+            <div className="flex items-center gap-1 p-1 bg-white/[0.03] border border-[var(--border-subtle)] rounded-xl w-full sm:w-auto overflow-x-auto">
               {[
                 { id: "all", label: `All (${stats.total})` },
                 { id: "not-started", label: `Not Started (${stats.notStarted})` },
@@ -361,7 +264,7 @@ export default function ProblemTrackerPage() {
                   className={cn(
                     "px-3 py-1.5 text-xs font-medium rounded-lg transition-all whitespace-nowrap cursor-pointer",
                     statusFilter === tab.id
-                      ? "bg-indigo-500/20 text-indigo-300 border border-indigo-500/40 shadow-sm shadow-indigo-500/10 font-bold"
+                      ? "bg-indigo-500/20 text-indigo-300 border border-indigo-500/40 font-semibold"
                       : "text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-white/[0.04]"
                   )}
                 >
@@ -383,11 +286,10 @@ export default function ProblemTrackerPage() {
 
         {/* Loading State */}
         {isLoading && (
-          <div className="space-y-4">
-            <Skeleton className="h-28 w-full rounded-2xl" />
+          <div className="space-y-3">
             <Skeleton className="h-10 w-full rounded-xl" />
             <div className="space-y-2">
-              {[...Array(8)].map((_, i) => (
+              {[...Array(10)].map((_, i) => (
                 <Skeleton key={i} className="h-12 w-full rounded-xl" />
               ))}
             </div>
@@ -429,7 +331,7 @@ export default function ProblemTrackerPage() {
           />
         )}
 
-        {/* Spreadsheet Data Grid with High-Performance Pagination */}
+        {/* Excel-like Spreadsheet Data Grid (15 problems per page) */}
         {!isLoading && !error && problems.length > 0 && (
           <motion.div variants={fadeIn} initial="hidden" animate="visible" className="space-y-3">
             <TableContainer className="border-[var(--border-muted)] shadow-xl">
@@ -469,7 +371,7 @@ export default function ProblemTrackerPage() {
                           {globalIdx}
                         </TableCell>
 
-                        {/* 2. Problem Name Link (SPOILER-FREE: Only name & URL) */}
+                        {/* 2. Problem Name Link (SPOILER-FREE) */}
                         <TableCell className="font-medium">
                           <a
                             href={p.url}
@@ -562,7 +464,7 @@ export default function ProblemTrackerPage() {
               </TableBody>
             </TableContainer>
 
-            {/* Pagination Controls (Next, Prev, 1, 2, 3 ... 100) */}
+            {/* Pagination Controls (15 per page) */}
             {filteredProblems.length > 0 && (
               <div className="p-2 rounded-2xl bg-white/[0.02] border border-[var(--border-subtle)]">
                 <Pagination
@@ -571,7 +473,7 @@ export default function ProblemTrackerPage() {
                   pageSize={pageSize}
                   onPageChange={setCurrentPage}
                   onPageSizeChange={setPageSize}
-                  pageSizeOptions={[25, 50, 100, 250]}
+                  pageSizeOptions={[15, 30, 50, 100]}
                 />
               </div>
             )}
