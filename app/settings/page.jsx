@@ -333,7 +333,7 @@ export default function SettingsPage() {
         {/* SECTION 1: LINKEDIN-STYLE CLEAN PROFILE DISPLAY CARD */}
         <div className="rounded-3xl border border-white/[0.1] bg-[#0c0e17] overflow-hidden shadow-2xl relative">
           {/* Panoramic Banner Area (Top) */}
-          <div className="relative w-full h-48 sm:h-56 md:h-64 bg-[#090b14] overflow-hidden group">
+          <div className="relative w-full h-48 sm:h-60 md:h-64 bg-[#090b14] overflow-hidden group">
             {account.bannerUrl?.startsWith("data:") ? (
               <img
                 src={account.bannerUrl}
@@ -355,7 +355,7 @@ export default function SettingsPage() {
             <button
               type="button"
               onClick={() => bannerInputRef.current?.click()}
-              className="absolute top-4 right-4 p-2.5 sm:p-3 rounded-full bg-black/60 hover:bg-black/85 backdrop-blur-md text-white border border-white/20 shadow-xl transition-all cursor-pointer hover:scale-110 active:scale-95 group/btn"
+              className="absolute top-4 right-4 p-2.5 sm:p-3 rounded-full bg-black/60 hover:bg-black/85 backdrop-blur-md text-white border border-white/20 shadow-xl transition-all cursor-pointer hover:scale-110 active:scale-95 group/btn z-10"
               title="Change Banner Photo"
               aria-label="Change banner"
             >
@@ -365,10 +365,10 @@ export default function SettingsPage() {
 
           {/* Profile Card Body */}
           <div className="px-6 sm:px-10 pb-8 relative bg-gradient-to-b from-[#0c0e17] to-[#080910]">
-            {/* Top Row: Overlapping Avatar on Left + Clean Edit Button on Right */}
-            <div className="flex items-start justify-between -mt-16 sm:-mt-20 md:-mt-24 mb-3 relative z-20">
-              {/* Overlapping Avatar: 55% in Banner, 45% in Card */}
-              <div className="relative inline-block group shrink-0">
+            {/* Top Seam Row: EXACT 50% AVATAR OVERLAP (-translate-y-1/2) */}
+            <div className="flex items-end justify-between relative z-20 h-0">
+              {/* Overlapping Avatar: Precisely 50% in Banner & 50% in Card */}
+              <div className="relative inline-block -translate-y-1/2 shrink-0">
                 <div className="rounded-full bg-[#0c0e17] p-1 sm:p-1.5 shadow-2xl ring-4 sm:ring-6 ring-[#0c0e17]">
                   <Avatar
                     src={account.avatarUrl}
@@ -398,8 +398,8 @@ export default function SettingsPage() {
                 </button>
               </div>
 
-              {/* Action Buttons in Top-Right of Card Body (LinkedIn style) */}
-              <div className="pt-2 sm:pt-4 flex items-center gap-2.5">
+              {/* Action Button: Top-Right of Card Body (LinkedIn style) */}
+              <div className="pt-4 sm:pt-6 mb-2">
                 <Button
                   variant="secondary"
                   size="sm"
@@ -412,8 +412,8 @@ export default function SettingsPage() {
               </div>
             </div>
 
-            {/* Profile Identity & Details Display */}
-            <div className="space-y-3">
+            {/* Profile Identity & Details Display (spaced properly below avatar bottom) */}
+            <div className="pt-20 sm:pt-24 space-y-3">
               <div>
                 <div className="flex items-center gap-3 flex-wrap">
                   <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-white tracking-tight">
