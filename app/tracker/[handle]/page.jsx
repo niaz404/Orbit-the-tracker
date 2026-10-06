@@ -8,28 +8,15 @@ import {
   ExternalLink,
   RefreshCw,
   AlertCircle,
-  Sparkles,
-  Check,
   BookmarkPlus,
   BookmarkCheck,
-  Maximize2,
-  User,
 } from "lucide-react";
 import { PageLayout } from "@/components/layout/page-layout";
 import { Button } from "@/components/ui/button";
 import { SearchInput } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { EmptyState } from "@/components/ui/empty-state";
-import { Tooltip } from "@/components/ui/tooltip";
 import { Pagination } from "@/components/ui/pagination";
-import {
-  Modal,
-  ModalHeader,
-  ModalTitle,
-  ModalDescription,
-  ModalContent,
-  ModalFooter,
-} from "@/components/ui/modal";
 import {
   TableContainer,
   TableHeader,
@@ -65,10 +52,6 @@ export default function ProblemTrackerPage() {
   // Pagination states: 15 problems per page by default
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(15);
-  
-  // Expanded note modal state
-  const [activeNoteProblem, setActiveNoteProblem] = useState(null);
-  const [noteModalText, setNoteModalText] = useState("");
 
   // Fetch solver profile & submissions
   const loadTrackerData = async () => {
@@ -143,18 +126,6 @@ export default function ProblemTrackerPage() {
       addBookmark(profile || { handle });
       setBookmarked(true);
     }
-  };
-
-  // Open Notes Modal
-  const openNoteModal = (problem) => {
-    setActiveNoteProblem(problem);
-    setNoteModalText(progressMap[problem.id]?.notes || "");
-  };
-
-  const saveModalNote = () => {
-    if (!activeNoteProblem) return;
-    handleNotesChange(activeNoteProblem.id, noteModalText);
-    setActiveNoteProblem(null);
   };
 
   // Calculate Status Counts
@@ -423,33 +394,21 @@ export default function ProblemTrackerPage() {
                           />
                         </TableCell>
 
-                        {/* 5. Personal Notes Input & Expand Modal */}
+                        {/* 5. Personal Notes Input */}
                         <TableCell>
-                          <div className="flex items-center gap-1.5">
-                            <input
-                              type="text"
-                              placeholder="Add observations..."
-                              aria-label={`Notes for ${p.name}`}
-                              defaultValue={prog.notes || ""}
-                              onBlur={(e) => handleNotesChange(p.id, e.target.value)}
-                              onKeyDown={(e) => {
-                                if (e.key === "Enter") {
-                                  e.currentTarget.blur();
-                                }
-                              }}
-                              className="flex-1 text-xs px-3 py-1.5 bg-white/[0.04] border border-white/[0.08] hover:border-white/[0.16] focus:border-indigo-500 rounded-xl focus-ring text-[var(--text-primary)] placeholder:text-[var(--text-muted)]"
-                            />
-                            <Tooltip content="Expand detailed note editor">
-                              <button
-                                type="button"
-                                onClick={() => openNoteModal(p)}
-                                className="p-1.5 rounded-lg text-[var(--text-muted)] hover:text-white hover:bg-white/[0.08] transition-colors cursor-pointer"
-                                aria-label="Expand note dialog"
-                              >
-                                <Maximize2 className="w-3.5 h-3.5" />
-                              </button>
-                            </Tooltip>
-                          </div>
+                          <input
+                            type="text"
+                            placeholder="Add observations..."
+                            aria-label={`Notes for ${p.name}`}
+                            defaultValue={prog.notes || ""}
+                            onBlur={(e) => handleNotesChange(p.id, e.target.value)}
+                            onKeyDown={(e) => {
+                              if (e.key === "Enter") {
+                                e.currentTarget.blur();
+                              }
+                            }}
+                            className="w-full text-xs px-3 py-1.5 bg-white/[0.04] border border-white/[0.08] hover:border-white/[0.16] focus:border-indigo-500 rounded-xl focus-ring text-[var(--text-primary)] placeholder:text-[var(--text-muted)]"
+                          />
                         </TableCell>
                       </TableRow>
                     );
@@ -480,54 +439,6 @@ export default function ProblemTrackerPage() {
           </motion.div>
         )}
       </div>
-
-      {/* Detailed Notes Modal */}
-      <Modal
-        isOpen={Boolean(activeNoteProblem)}
-        onClose={() => setActiveNoteProblem(null)}
-        size="lg"
-      >
-        <ModalHeader onClose={() => setActiveNoteProblem(null)}>
-          <ModalTitle>Personal Notes & Observations</ModalTitle>
-          <ModalDescription>
-            {activeNoteProblem?.name}
-          </ModalDescription>
-        </ModalHeader>
-        <ModalContent>
-          <div className="space-y-3">
-            <label className="block text-xs font-medium text-[var(--text-secondary)]">
-              Your Problem-Solving Notes
-            </label>
-            <textarea
-              rows={6}
-              value={noteModalText}
-              onChange={(e) => setNoteModalText(e.target.value)}
-              placeholder="Record your thoughts, observations, edge cases, or takeaways..."
-              className="w-full text-xs p-3.5 bg-white/[0.04] border border-white/[0.1] hover:border-white/[0.2] focus:border-indigo-500 rounded-xl focus-ring text-[var(--text-primary)] placeholder:text-[var(--text-muted)] resize-none"
-            />
-            <p className="text-[11px] text-[var(--text-muted)]">
-              Notes are private and stored locally on your device.
-            </p>
-          </div>
-        </ModalContent>
-        <ModalFooter>
-          <Button
-            variant="secondary"
-            size="sm"
-            onClick={() => setActiveNoteProblem(null)}
-          >
-            Cancel
-          </Button>
-          <Button
-            variant="primary"
-            size="sm"
-            onClick={saveModalNote}
-            leftIcon={<Check className="w-3.5 h-3.5" />}
-          >
-            Save Note
-          </Button>
-        </ModalFooter>
-      </Modal>
     </PageLayout>
   );
 }
