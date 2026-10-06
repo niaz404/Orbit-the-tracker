@@ -6,6 +6,7 @@ import { Header } from "./header";
 
 export function AppShell({ children, pageTitle = "Workspace" }) {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [collapsed, setCollapsed] = useState(false);
 
   return (
     <div className="relative h-screen w-screen overflow-hidden bg-[var(--bg-app)] text-[var(--text-primary)] flex selection:bg-indigo-500/30 selection:text-indigo-200">
@@ -18,6 +19,8 @@ export function AppShell({ children, pageTitle = "Workspace" }) {
 
       {/* Persistent Stationary Glass Sidebar */}
       <Sidebar
+        collapsed={collapsed}
+        onToggleCollapse={() => setCollapsed(!collapsed)}
         isMobileOpen={mobileOpen}
         onMobileClose={() => setMobileOpen(false)}
       />
@@ -27,6 +30,8 @@ export function AppShell({ children, pageTitle = "Workspace" }) {
         <Header
           title={pageTitle}
           onMobileMenuToggle={() => setMobileOpen(!mobileOpen)}
+          collapsed={collapsed}
+          onToggleSidebar={() => setCollapsed(!collapsed)}
         />
         <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto">
           {children}
@@ -35,4 +40,5 @@ export function AppShell({ children, pageTitle = "Workspace" }) {
     </div>
   );
 }
+
 

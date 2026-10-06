@@ -1,6 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=Agu+Display&family=Audiowide&family=Outfit:wght@600;700;800;900&display=swap');
 @import "tailwindcss";
 
 :root {
+
+
   /* Canvas & Glassmorphism Surfaces */
   --bg-app: #06070a;
   --bg-sidebar: rgba(10, 12, 18, 0.75);
@@ -87,11 +90,17 @@
   --font-sans: var(--font-geist-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-mono: var(--font-geist-mono), "JetBrains Mono", "Fira Code", monospace;
   --font-brand: var(--font-brand), var(--font-sans);
+  --font-logo: 'Agu Display', 'Audiowide', sans-serif;
 }
 
 .font-brand {
   font-family: var(--font-brand), var(--font-sans);
 }
+
+.font-logo {
+  font-family: 'Agu Display', 'Audiowide', cursive, sans-serif;
+}
+
 
 
 /* Base resets */

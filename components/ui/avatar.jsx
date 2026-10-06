@@ -17,7 +17,6 @@ export function Avatar({
   alt = "",
   fallback = "U",
   size = "md",
-  status,
   borderColor,
   className,
 }) {
@@ -53,18 +52,8 @@ export function Avatar({
           <span className="select-none tracking-tight">{fallback?.slice(0, 2).toUpperCase()}</span>
         )}
       </div>
-      {status && (
-        <span
-          className={cn(
-            "absolute bottom-1 right-1 block rounded-full ring-3 ring-[#06070a] z-10",
-            size === "xs" || size === "sm" ? "w-2.5 h-2.5" : "w-4 h-4",
-            status === "online" && "bg-emerald-400 shadow-[0_0_12px_rgba(16,185,129,0.8)]",
-            status === "idle" && "bg-amber-400",
-            status === "offline" && "bg-[var(--text-muted)]"
-          )}
-        />
-      )}
     </div>
   );
 }
+
 

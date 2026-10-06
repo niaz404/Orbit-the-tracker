@@ -9,7 +9,6 @@ import {
   RotateCcw,
   ShieldAlert,
   CheckCircle2,
-  FileJson,
   Sparkles,
   Info,
   Save,
@@ -20,12 +19,11 @@ import {
   Palette,
   Image as ImageIcon,
   Edit3,
-  Layers,
   Lock,
   Unlock,
   ShieldCheck,
 } from "lucide-react";
-import { PageLayout } from "@/components/layout/page-layout";
+import { AppShell } from "@/components/layout/app-shell";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -39,7 +37,6 @@ import {
   exportAllData,
   importAllData,
   resetAllData,
-  getBookmarks,
 } from "@/lib/storage";
 import { slideUp } from "@/lib/animations";
 
@@ -53,7 +50,7 @@ const BANNER_PRESETS = [
 export default function SettingsPage() {
   const [account, setAccount] = useState({
     displayName: "Explorer",
-    username: "orbit_user",
+    username: "",
     uniqueCode: "",
     avatarUrl: "",
     avatarBorderColor: "#6366f1",
@@ -64,7 +61,6 @@ export default function SettingsPage() {
 
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [displayNameInput, setDisplayNameInput] = useState("Explorer");
-  const [usernameInput, setUsernameInput] = useState("orbit_user");
   const [bioInput, setBioInput] = useState("");
   const [selectedBorderColor, setSelectedBorderColor] = useState("#6366f1");
   const [selectedBanner, setSelectedBanner] = useState("gradient:indigo-purple");
@@ -73,8 +69,6 @@ export default function SettingsPage() {
   const [copiedCode, setCopiedCode] = useState(false);
   const [isToastOpen, setIsToastOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
-
-  const [bookmarkCount, setBookmarkCount] = useState(0);
 
   // Avatar and banner file inputs
   const [isCropperOpen, setIsCropperOpen] = useState(false);
@@ -101,27 +95,20 @@ export default function SettingsPage() {
     const acc = getAccountProfile();
     setAccount(acc);
     setDisplayNameInput(acc.displayName || "Explorer");
-    setUsernameInput(acc.username || "orbit_user");
     setBioInput(acc.bio || "");
     setSelectedBorderColor(acc.avatarBorderColor || "#6366f1");
     setSelectedBanner(acc.bannerUrl || "gradient:indigo-purple");
-    setBookmarkCount(getBookmarks().length);
   };
 
   useEffect(() => {
     loadData();
     const handleUpdate = () => loadData();
     window.addEventListener("orbit_account_updated", handleUpdate);
-    window.addEventListener("orbit_bookmarks_updated", handleUpdate);
-    return () => {
-      window.removeEventListener("orbit_account_updated", handleUpdate);
-      window.removeEventListener("orbit_bookmarks_updated", handleUpdate);
-    };
+    return () => window.removeEventListener("orbit_account_updated", handleUpdate);
   }, []);
 
   const handleOpenEditModal = () => {
     setDisplayNameInput(account.displayName || "Explorer");
-    setUsernameInput(account.username || "orbit_user");
     setBioInput(account.bio || "");
     setSelectedBorderColor(account.avatarBorderColor || "#6366f1");
     setSelectedBanner(account.bannerUrl || "gradient:indigo-purple");
@@ -134,7 +121,6 @@ export default function SettingsPage() {
 
     saveAccountProfile({
       displayName: displayNameInput.trim(),
-      username: usernameInput.trim() || "orbit_user",
       bio: bioInput.trim(),
       avatarBorderColor: selectedBorderColor,
       bannerUrl: selectedBanner,
@@ -282,25 +268,12 @@ export default function SettingsPage() {
   const currentBannerClass = BANNER_PRESETS.find((b) => b.id === (account.bannerUrl || selectedBanner))?.css;
 
   return (
-    <PageLayout
-      title="User Profile & Settings"
-      description="Manage your public profile identity, custom photo banner, and secure migration authentication."
-      badge={
-        account.uniqueCode ? (
-          <Badge variant="accent">
-            <ShieldCheck className="w-3.5 h-3.5 mr-1" />
-            Key Verified
-          </Badge>
-        ) : (
-          <Badge variant="neutral">Setup Pending</Badge>
-        )
-      }
-    >
+    <AppShell pageTitle="Settings">
       <motion.div
         variants={slideUp}
         initial="hidden"
         animate="visible"
-        className="max-w-5xl mx-auto space-y-8 pb-12"
+        className="max-w-5xl mx-auto space-y-6 pb-12"
       >
         {/* TOAST NOTIFICATION */}
         <AnimatePresence>
@@ -317,9 +290,9 @@ export default function SettingsPage() {
           )}
         </AnimatePresence>
 
-        {/* 1. LINKEDIN-STYLE PROFILE CARD */}
+        {/* 1. LINKEDIN-STYLE CLEAN PROFILE CARD */}
         <div className="rounded-3xl border border-white/[0.08] bg-[#0c0e17] overflow-hidden shadow-2xl relative">
-          {/* Top Banner (Relative container with absolute elements) */}
+          {/* Panoramic Banner Area */}
           <div className="relative w-full h-48 sm:h-56 md:h-64 bg-[#090b14] overflow-visible">
             {account.bannerUrl?.startsWith("data:") ? (
               <img
@@ -348,7 +321,7 @@ export default function SettingsPage() {
               <Camera className="w-4 h-4 text-white" />
             </button>
 
-            {/* Avatar (Exactly 50% Overlapping Banner & Card Body) */}
+            {/* Avatar (50% Overlapping Banner & Card Body) */}
             <div className="absolute -bottom-16 sm:-bottom-20 left-6 sm:left-10 z-20">
               <div className="relative group">
                 <div
@@ -409,21 +382,13 @@ export default function SettingsPage() {
             {/* Profile Identity Details */}
             <div className="space-y-3">
               <div>
-                <div className="flex items-center gap-3 flex-wrap">
-                  <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
-                    {account.displayName || "Explorer"}
-                  </h1>
-                  <Badge variant="accent" dot>Active Solver</Badge>
-                </div>
+                <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-white tracking-tight">
+                  {account.displayName || "Explorer"}
+                </h1>
 
                 <div className="flex items-center gap-3 text-xs text-[var(--text-secondary)] flex-wrap pt-1.5">
-                  <span className="font-mono font-bold text-indigo-300 text-sm">
-                    @{account.username || "orbit_user"}
-                  </span>
-                  <span className="text-[var(--text-muted)]">•</span>
-                  <span className="flex items-center gap-1.5 text-[var(--text-muted)]">
-                    <Layers className="w-3.5 h-3.5 text-indigo-400" />
-                    <span>{bookmarkCount} Bookmarked Solvers</span>
+                  <span className="font-mono text-indigo-300 text-xs">
+                    @{account.username || "username"}
                   </span>
                   <span className="text-[var(--text-muted)]">•</span>
                   <span className="flex items-center gap-1.5">
@@ -749,11 +714,11 @@ export default function SettingsPage() {
             <span>Edit Profile Details</span>
           </ModalTitle>
           <ModalDescription>
-            Update your public display name, handle, bio, and visual theme.
+            Update your public display name, bio, and visual theme.
           </ModalDescription>
         </ModalHeader>
         <form onSubmit={handleSaveProfile}>
-          <ModalContent className="space-y-6 max-h-[70vh] overflow-y-auto pr-1">
+          <ModalContent className="space-y-5 max-h-[70vh] overflow-y-auto pr-1">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <Input
                 label="Display Name"
@@ -763,12 +728,11 @@ export default function SettingsPage() {
                 required
               />
               <Input
-                label="Username / Handler"
-                placeholder="e.g. alex_dev"
-                value={usernameInput}
-                onChange={(e) => setUsernameInput(e.target.value)}
-                helperText={`Public handle: @${usernameInput.toLowerCase().replace(/[@\s]/g, "")}`}
-                required
+                label="Username / Handle"
+                placeholder="username"
+                value={account.username || ""}
+                disabled
+                helperText="Username can be customized after cloud database & auth is implemented."
               />
             </div>
 
@@ -938,6 +902,6 @@ export default function SettingsPage() {
           </Button>
         </ModalFooter>
       </Modal>
-    </PageLayout>
+    </AppShell>
   );
 }
