@@ -50,11 +50,11 @@ export default function WorkspacePage() {
     loadWorkspace();
 
     const handleSync = () => loadWorkspace();
-    window.addEventListener("codetrack_bookmarks_updated", handleSync);
-    window.addEventListener("codetrack_progress_updated", handleSync);
+    window.addEventListener("orbit_bookmarks_updated", handleSync);
+    window.addEventListener("orbit_progress_updated", handleSync);
     return () => {
-      window.removeEventListener("codetrack_bookmarks_updated", handleSync);
-      window.removeEventListener("codetrack_progress_updated", handleSync);
+      window.removeEventListener("orbit_bookmarks_updated", handleSync);
+      window.removeEventListener("orbit_progress_updated", handleSync);
     };
   }, []);
 
@@ -62,6 +62,7 @@ export default function WorkspacePage() {
     if (deleteTarget) {
       removeBookmark(deleteTarget.handle);
       setDeleteTarget(null);
+      loadWorkspace();
     }
   };
 
